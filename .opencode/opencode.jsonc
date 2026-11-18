@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "instructions": ["AGENTS.md"],
+  "instructions": ["README.md"],
   "watcher": {
     "ignore": [
       "config/credentials.local.json",
