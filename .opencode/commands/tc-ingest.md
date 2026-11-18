@@ -1,13 +1,15 @@
 ---
-description: Ingest an explicitly approved local PDF
+description: Ingest an explicitly approved local PDF or Markdown note
 ---
 
 Ingest only after explicit approval. Use:
 
 ```powershell
 python -m app.cli ingest "path\to\manual.pdf"
+python -m app.cli ingest "docs\plc-plus-plus.md"
 ```
 
-Report the number of documents/chunks added. Do not ingest downloaded GitHub code
-until its license and safety have been reviewed. Prefer adding official PDFs to
+Both `.pdf` and `.md` files are supported. Report the number of
+documents/chunks added. Do not ingest downloaded GitHub code until its license
+and safety have been reviewed. Prefer adding official PDFs to
 `config/sources.json` so `/tc-update` tracks versions.

@@ -8,7 +8,7 @@ logging.getLogger("pypdf").setLevel(logging.ERROR)
 
 from . import db
 
-TEXT_SUFFIXES = {".txt"}
+TEXT_SUFFIXES = {".txt", ".md"}
 MAX_FILE_BYTES = 80 * 1024 * 1024
 
 

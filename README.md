@@ -40,6 +40,16 @@ python automation_mcp_server.py
 
 Or open the workspace in OpenCode and use the `/tc-*` commands.
 
+The knowledge base ingests official Beckhoff PDFs and local Markdown notes:
+
+```powershell
+python -m app.cli ingest docs\plc-plus-plus.md
+python -m app.cli search "PLC++"
+```
+
+`/tc-ingest` uses the same path, so approved `.md` field notes become searchable
+with the rest of the corpus.
+
 ## Layout
 
 ```text
