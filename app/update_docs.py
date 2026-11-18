@@ -18,6 +18,7 @@ from typing import Any
 
 from .config import OFFICIAL_TEXT, PDF_STORE, ROOT, STATE_PATH, UPDATES, ensure_dirs, load_json, save_json
 from . import sources as source_registry
+from .pdf_versions import VERSIONS_PATH
 
 logging.getLogger("pypdf").setLevel(logging.ERROR)
 
@@ -298,11 +299,44 @@ def _write_digest(out_dir: Path, doc_results: list[dict], github: dict[str, Any]
     return digest
 
 
+def _seed_state_from_versions() -> dict[str, Any]:
+    """Rebuild change-detection state from the tracked PDF version registry.
+
+    ``data/update_state.json`` is local-only state. When it is missing, a
+    plain rerun would treat every PDF as new and re-download the whole corpus.
+    ``data/pdf_versions.json`` keeps the same signature fields, so seed the
+    state from it before falling back to a full download.
+    """
+    payload = load_json(VERSIONS_PATH, {})
+    state: dict[str, Any] = {}
+    for item in payload.get("pdfs", []):
+        doc_id = str(item.get("id", ""))
+        if not doc_id:
+            continue
+        entry = {
+            key: str(item[key])
+            for key in ("sha256", "etag", "last_modified", "signature", "version")
+            if item.get(key)
+        }
+        if entry.get("signature"):
+            state[doc_id] = entry
+    return state
+
+
 def run(scope: str = "all") -> Path:
     ensure_dirs()
     registry = source_registry.load_registry()
     documents = source_registry.flatten_documents(registry)
     state = load_json(STATE_PATH, {})
+    if scope in {"all", "docs"} and not state:
+        seeded = _seed_state_from_versions()
+        if seeded:
+            state = seeded
+            save_json(STATE_PATH, state)
+            print(
+                f"Seeded update state for {len(seeded)} PDFs from {VERSIONS_PATH.name}",
+                flush=True,
+            )
     stamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
     out_dir = UPDATES / stamp
     out_dir.mkdir(parents=True, exist_ok=True)

@@ -50,6 +50,12 @@ python -m app.cli search "PLC++"
 `/tc-ingest` uses the same path, so approved `.md` field notes become searchable
 with the rest of the corpus.
 
+Retrieval is **SQLite FTS5** (`chunks_fts`, trigram tokenizer, BM25 ranking,
+snippet highlighting). There is **no vector/RAG layer for now** (decided
+2026-11-18): the corpus is exact-term documentation, where lexical search with
+citations is more precise and auditable than embeddings. Revisit only if
+paraphrased queries become a real gap.
+
 ## Layout
 
 ```text
