@@ -65,6 +65,19 @@ Start the automation server:
 python automation_mcp_server.py
 ```
 
+## Knowledge base
+
+- Sources are official Beckhoff PDFs only; the store lives in `data/pdfs/`
+  with extracted text in `data/official_text/` (both local-only).
+- Retrieval is **SQLite FTS5** (`chunks_fts`, trigram tokenizer, BM25 ranking,
+  snippet highlighting) — lexical search with citations, deterministic and
+  offline.
+- **No vector/RAG layer for now** (decided 2026-11-18). The corpus is exact-term
+  documentation (`MC_Power`, `0x8145`, `AXIS_REF`), where FTS5 is more precise
+  and auditable than embeddings. Revisit only if paraphrased queries become a
+  real gap; if revisited, add embeddings as an optional second recall path,
+  not a replacement.
+
 ## Layout
 
 ```text
